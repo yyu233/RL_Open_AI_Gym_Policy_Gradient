@@ -1,3 +1,4 @@
+from pkg_resources import Distribution
 import torch
 import torch.nn as nn
 import torch.distributions as ptd
@@ -62,7 +63,8 @@ class CategoricalPolicy(BasePolicy, nn.Module):
         """
         #######################################################
         #########   YOUR CODE HERE - 1-2 lines.    ############
-
+        logits = self.network(observations)
+        distribution = ptd.categorical.Categorical(None, logits, None)
         #######################################################
         #########          END YOUR CODE.          ############
         return distribution
@@ -80,7 +82,7 @@ class GaussianPolicy(BasePolicy, nn.Module):
         self.network = network
         #######################################################
         #########   YOUR CODE HERE - 1 line.       ############
-
+        self.log_std = nn.Parameter(torch.zeros(action_dim))
         #######################################################
         #########          END YOUR CODE.          ############
 
@@ -94,7 +96,7 @@ class GaussianPolicy(BasePolicy, nn.Module):
         """
         #######################################################
         #########   YOUR CODE HERE - 1 line.       ############
-
+        std = torch.exp(self.log_std)
         #######################################################
         #########          END YOUR CODE.          ############
         return std
@@ -118,7 +120,9 @@ class GaussianPolicy(BasePolicy, nn.Module):
         """
         #######################################################
         #########   YOUR CODE HERE - 2-4 lines.    ############
-
+        mean = self.network(observations)
+        std = self.std()
+        distribution = torch.distributions.MultivariateNormal(mean, std)
         #######################################################
         #########          END YOUR CODE.          ############
         return distribution
