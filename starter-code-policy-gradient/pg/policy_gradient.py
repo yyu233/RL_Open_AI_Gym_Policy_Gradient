@@ -69,7 +69,19 @@ class PolicyGradient(object):
         """
         #######################################################
         #########   YOUR CODE HERE - 8-12 lines.   ############
+        self.network = build_mlp(
+            self.observation_dim,
+            self.action_dim,
+            self.config.n_layers,
+            self.config.layer_size
+        )
 
+        if self.discrete == True:
+            self.policy = CategoricalPolicy(self.network)
+        else:
+            self.policy = GaussianPolicy(self.network, self.action_dim)
+
+        self.optimizer = torch.optim.Adam(self.policy.parameters(), lr=self.lr)
         #######################################################
         #########          END YOUR CODE.          ############
 
@@ -185,7 +197,9 @@ class PolicyGradient(object):
             rewards = path["reward"]
             #######################################################
             #########   YOUR CODE HERE - 5-10 lines.   ############
-
+            returns = 0.0
+            for t in range(rewards):
+                returns = returns + (self.config.gamma ** t) * rewards[t]
             #######################################################
             #########          END YOUR CODE.          ############
             all_returns.append(returns)
@@ -210,7 +224,9 @@ class PolicyGradient(object):
         """
         #######################################################
         #########   YOUR CODE HERE - 1-2 lines.    ############
-
+        mean = np.mean(advantages)
+        std = np.std(advantages)
+        normalized_advantages = (advantages - mean) / std
         #######################################################
         #########          END YOUR CODE.          ############
         return normalized_advantages
@@ -261,7 +277,14 @@ class PolicyGradient(object):
         advantages = np2torch(advantages)
         #######################################################
         #########   YOUR CODE HERE - 5-7 lines.    ############
-
+        distribution = self.policy.action_distribution(observations)
+        sampled_actions = self.policy.act(observations)
+        for action in sampled_actions:
+            self.optimizer.zero_grad()
+            reward = self.env(action)
+            loss = - self.lr * reward * distribution.log_prob(action)
+            loss.backward()
+            self.optimizer.step()
         #######################################################
         #########          END YOUR CODE.          ############
 
