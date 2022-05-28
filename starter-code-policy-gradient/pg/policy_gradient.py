@@ -278,13 +278,10 @@ class PolicyGradient(object):
         #######################################################
         #########   YOUR CODE HERE - 5-7 lines.    ############
         distribution = self.policy.action_distribution(observations)
-        sampled_actions = self.policy.act(observations)
-        for action in sampled_actions:
-            self.optimizer.zero_grad()
-            reward = self.env(action)
-            loss = - self.lr * reward * distribution.log_prob(action)
-            loss.backward()
-            self.optimizer.step()
+        self.optimizer.zero_grad()
+        loss = - torch.sum(advantages * distribution.log_prob(actions))
+        loss.backward()
+        self.optimizer.step()
         #######################################################
         #########          END YOUR CODE.          ############
 
