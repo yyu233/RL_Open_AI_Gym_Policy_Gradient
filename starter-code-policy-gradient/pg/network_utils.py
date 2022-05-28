@@ -40,6 +40,8 @@ def build_mlp(
 
         def foward(self, x):
             return self.layers(x)
+
+    return MLP(input_size, output_size, n_layers, size)
     #######################################################
     #########          END YOUR CODE.          ############
 

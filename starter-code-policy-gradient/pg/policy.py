@@ -2,7 +2,6 @@ from pkg_resources import Distribution
 import torch
 import torch.nn as nn
 import torch.distributions as ptd
-
 from network_utils import np2torch, device
 
 
@@ -40,7 +39,8 @@ class BasePolicy:
         observations = np2torch(observations)
         #######################################################
         #########   YOUR CODE HERE - 1-3 lines.    ############
-
+        distribution = self.action_distribution(observations)
+        sampled_actions = distribution.sample().numpy()
         #######################################################
         #########          END YOUR CODE.          ############
         return sampled_actions
