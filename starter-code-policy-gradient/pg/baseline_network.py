@@ -31,7 +31,7 @@ class BaselineNetwork(nn.Module):
 
         self.network = build_mlp(
             self.observation_dim,
-            self.action_dim,
+            1,
             self.config.n_layers,
             self.config.layer_size
         ).to(device)
@@ -60,7 +60,8 @@ class BaselineNetwork(nn.Module):
         """
         #######################################################
         #########   YOUR CODE HERE - 1 lines.     #############
-        output = torch.flatten(self.network.forward(observations))
+        a = self.network.forward(observations)
+        output = torch.flatten(a)
         #######################################################
         #########          END YOUR CODE.          ############
         assert output.ndim == 1
@@ -88,7 +89,7 @@ class BaselineNetwork(nn.Module):
         observations = np2torch(observations)
         #######################################################
         #########   YOUR CODE HERE - 1-4 lines.   ############
-        self.baseline = self.forward(observations).numpy()
+        self.baseline = self.forward(observations).cpu().detach().numpy()
         advantages = returns - self.baseline
         #######################################################
         #########          END YOUR CODE.          ############

@@ -202,6 +202,7 @@ class PolicyGradient(object):
             for t in range(rewards.shape[0]):
                 returns = returns + (self.config.gamma ** t) * rewards[t]
                 return_list.append(returns)
+            return_list.reverse()
             #######################################################
             #########          END YOUR CODE.          ############
             all_returns.append(return_list)
