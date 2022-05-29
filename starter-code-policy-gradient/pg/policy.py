@@ -1,3 +1,4 @@
+import numpy as np
 from pkg_resources import Distribution
 import torch
 import torch.nn as nn
@@ -82,7 +83,8 @@ class GaussianPolicy(BasePolicy, nn.Module):
         self.network = network
         #######################################################
         #########   YOUR CODE HERE - 1 line.       ############
-        self.log_std = nn.Parameter(torch.zeros(action_dim))
+        #self.log_std = nn.Parameter(torch.zeros(action_dim))
+        self.log_std = nn.Parameter(data=np2torch(np.zeros(shape=(action_dim,))))
         #######################################################
         #########          END YOUR CODE.          ############
 
@@ -122,7 +124,9 @@ class GaussianPolicy(BasePolicy, nn.Module):
         #########   YOUR CODE HERE - 2-4 lines.    ############
         mean = self.network(observations)
         std = self.std()
-        distribution = torch.distributions.MultivariateNormal(mean, std)
+        normal = ptd.normal.Normal(mean, std)
+        distribution = ptd.independent.Independent(normal, 1)
+        #distribution = torch.distributions.MultivariateNormal(mean, std)
         #######################################################
         #########          END YOUR CODE.          ############
         return distribution

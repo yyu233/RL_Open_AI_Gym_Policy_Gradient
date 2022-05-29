@@ -35,7 +35,7 @@ def build_mlp(
                     modules.append(nn.Linear(input_size, size))
                     #self.layers.add_module("Linear {}".format(i), nn.Linear(input_size, size))
                 else:
-                    modules.append(nn.Linear(input_size, size))
+                    modules.append(nn.Linear(size, size))
                     #self.layers.add_module("Linear {}".format(i), nn.Linear(input_size, size))
                 modules.append(nn.ReLU())
                 #self.layers.add_module("ReLU {}".format(i), nn.ReLU())

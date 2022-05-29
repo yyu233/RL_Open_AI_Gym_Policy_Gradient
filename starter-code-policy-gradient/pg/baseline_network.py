@@ -60,7 +60,7 @@ class BaselineNetwork(nn.Module):
         """
         #######################################################
         #########   YOUR CODE HERE - 1 lines.     #############
-        output = torch.flatten(self.network.foward(observations))
+        output = torch.flatten(self.network.forward(observations))
         #######################################################
         #########          END YOUR CODE.          ############
         assert output.ndim == 1
@@ -113,7 +113,7 @@ class BaselineNetwork(nn.Module):
         #######################################################
         #########   YOUR CODE HERE - 4-10 lines.  #############
         self.optimizer.zero_grad()
-        self.baseline = self.forward(observations).numpy()
+        self.baseline = self.forward(observations)
         loss = nn.MSELoss()
         output = loss(self.baseline, returns)
         output.backward()
