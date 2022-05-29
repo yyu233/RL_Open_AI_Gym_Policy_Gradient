@@ -34,9 +34,9 @@ class BaselineNetwork(nn.Module):
             self.action_dim,
             self.config.n_layers,
             self.config.layer_size
-            )
+        ).to(device)
 
-        self.optimizer = torch.optim.Adam(self.networ.parameters(), lr=self.lr)
+        self.optimizer = torch.optim.Adam(self.network.parameters(), lr=self.lr)
         #######################################################
         #########          END YOUR CODE.          ############
 

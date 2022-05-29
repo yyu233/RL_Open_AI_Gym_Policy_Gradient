@@ -74,7 +74,7 @@ class PolicyGradient(object):
             self.action_dim,
             self.config.n_layers,
             self.config.layer_size
-        )
+        ).to(device)
 
         if self.discrete == True:
             self.policy = CategoricalPolicy(self.network)
@@ -197,12 +197,14 @@ class PolicyGradient(object):
             rewards = path["reward"]
             #######################################################
             #########   YOUR CODE HERE - 5-10 lines.   ############
+            return_list = []
             returns = 0.0
-            for t in range(rewards):
+            for t in range(rewards.shape[0]):
                 returns = returns + (self.config.gamma ** t) * rewards[t]
+                return_list.append(returns)
             #######################################################
             #########          END YOUR CODE.          ############
-            all_returns.append(returns)
+            all_returns.append(return_list)
         returns = np.concatenate(all_returns)
 
         return returns

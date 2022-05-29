@@ -40,7 +40,7 @@ class BasePolicy:
         #######################################################
         #########   YOUR CODE HERE - 1-3 lines.    ############
         distribution = self.action_distribution(observations)
-        sampled_actions = distribution.sample().numpy()
+        sampled_actions = distribution.sample().cpu().numpy()
         #######################################################
         #########          END YOUR CODE.          ############
         return sampled_actions
