@@ -27,7 +27,6 @@ class BaselineNetwork(nn.Module):
         #########   YOUR CODE HERE - 2-8 lines.   #############
         self.discrete = isinstance(env.action_space, gym.spaces.Discrete)
         self.observation_dim = self.env.observation_space.shape[0]
-        self.action_dim = self.env.action_space.n if self.discrete else self.env.action_space.shape[0]
 
         self.network = build_mlp(
             self.observation_dim,

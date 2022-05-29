@@ -195,19 +195,20 @@ class PolicyGradient(object):
         all_returns = []
         for path in paths:
             rewards = path["reward"]
+            #print(rewards)
             #######################################################
             #########   YOUR CODE HERE - 5-10 lines.   ############
             return_list = []
             returns = 0.0
-            for t in range(rewards.shape[0]):
-                returns = returns + (self.config.gamma ** t) * rewards[t]
+            H = rewards.shape[0]
+            for t in range(H):
+                returns = np.sum(np.power(self.config.gamma, np.arange(H - t)) * rewards[t:])
                 return_list.append(returns)
-            return_list.reverse()
             #######################################################
             #########          END YOUR CODE.          ############
             all_returns.append(return_list)
         returns = np.concatenate(all_returns)
-
+        #print(returns)
         return returns
 
     def normalize_advantage(self, advantages):
