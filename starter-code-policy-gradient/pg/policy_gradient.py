@@ -198,12 +198,13 @@ class PolicyGradient(object):
             #print(rewards)
             #######################################################
             #########   YOUR CODE HERE - 5-10 lines.   ############
-            return_list = []
-            returns = 0.0
+            return_list = rewards
             H = rewards.shape[0]
-            for t in range(H):
-                returns = np.sum(np.power(self.config.gamma, np.arange(H - t)) * rewards[t:])
-                return_list.append(returns)
+            #for t in range(H):
+            #    returns = np.sum(np.power(self.config.gamma, np.arange(H - t)) * rewards[t:])
+            #    return_list.append(returns)
+            for t in range(1, H):
+                return_list[-t - 1] = self.config.gamma * return_list[-t] + return_list[-t - 1]
             #######################################################
             #########          END YOUR CODE.          ############
             all_returns.append(return_list)
