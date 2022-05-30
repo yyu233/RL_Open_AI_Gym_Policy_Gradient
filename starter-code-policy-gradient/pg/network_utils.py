@@ -26,7 +26,27 @@ def build_mlp(
     """
     #######################################################
     #########   YOUR CODE HERE - 7-15 lines.   ############
+    class MLP(nn.Module):
+        def __init__(self, input_size, output_size, n_layers, size):
+            super().__init__()
+            modules = []
+            for i in range(n_layers):
+                if i == 0:
+                    modules.append(nn.Linear(input_size, size))
+                    #self.layers.add_module("Linear {}".format(i), nn.Linear(input_size, size))
+                else:
+                    modules.append(nn.Linear(size, size))
+                    #self.layers.add_module("Linear {}".format(i), nn.Linear(input_size, size))
+                modules.append(nn.ReLU())
+                #self.layers.add_module("ReLU {}".format(i), nn.ReLU())
+            modules.append(nn.Linear(size, output_size))
+            #self.layers.add_module("Linear {}".format(n_layers), nn.Linear(size, output_size))
+            self.layers = nn.Sequential(*modules)
 
+        def forward(self, x):
+            return self.layers(x)
+
+    return MLP(input_size, output_size, n_layers, size)
     #######################################################
     #########          END YOUR CODE.          ############
 

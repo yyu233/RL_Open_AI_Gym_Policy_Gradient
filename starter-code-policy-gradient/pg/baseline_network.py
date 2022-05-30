@@ -1,3 +1,4 @@
+import gym
 import numpy as np
 import torch
 import torch.nn as nn
@@ -24,7 +25,17 @@ class BaselineNetwork(nn.Module):
 
         #######################################################
         #########   YOUR CODE HERE - 2-8 lines.   #############
+        self.discrete = isinstance(env.action_space, gym.spaces.Discrete)
+        self.observation_dim = self.env.observation_space.shape[0]
 
+        self.network = build_mlp(
+            self.observation_dim,
+            1,
+            self.config.n_layers,
+            self.config.layer_size
+        ).to(device)
+
+        self.optimizer = torch.optim.Adam(self.network.parameters(), lr=self.lr)
         #######################################################
         #########          END YOUR CODE.          ############
 
@@ -48,7 +59,8 @@ class BaselineNetwork(nn.Module):
         """
         #######################################################
         #########   YOUR CODE HERE - 1 lines.     #############
-
+        a = self.network.forward(observations)
+        output = torch.flatten(a)
         #######################################################
         #########          END YOUR CODE.          ############
         assert output.ndim == 1
@@ -76,7 +88,8 @@ class BaselineNetwork(nn.Module):
         observations = np2torch(observations)
         #######################################################
         #########   YOUR CODE HERE - 1-4 lines.   ############
-
+        self.baseline = self.forward(observations).cpu().detach().numpy()
+        advantages = returns - self.baseline
         #######################################################
         #########          END YOUR CODE.          ############
         return advantages
@@ -99,6 +112,11 @@ class BaselineNetwork(nn.Module):
         observations = np2torch(observations)
         #######################################################
         #########   YOUR CODE HERE - 4-10 lines.  #############
-
+        self.optimizer.zero_grad()
+        self.baseline = self.forward(observations)
+        loss = nn.MSELoss()
+        output = loss(self.baseline, returns)
+        output.backward()
+        self.optimizer.step()
         #######################################################
         #########          END YOUR CODE.          ############
